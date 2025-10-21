@@ -1,0 +1,470 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "LNB Airlines - Employee Portal";
+}
+
+<div class="dashboard-container">
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4>LNB Airlines</h4>
+            <button class="sidebar-toggle d-md-none" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-item active">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>My Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Pick Up Shift</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-minus-circle"></i>
+                    <span>Drop a Shift</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-gift"></i>
+                    <span>Incentives</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="signOut()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1>Employee Dashboard</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-avatar dropdown">
+                    <button class="avatar-btn dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="https://via.placeholder.com/40x40/003366/ffffff?text=@(HttpContext.Session.GetString("FullName")?.Substring(0, 2).ToUpper() ?? "U")" alt="@HttpContext.Session.GetString("FullName")" class="avatar-img">
+                        <span class="user-info">
+                            <span class="user-name">@HttpContext.Session.GetString("FullName")</span>
+                            <span class="user-role">@HttpContext.Session.GetString("Role")</span>
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#" onclick="signOut()"><i class="fas fa-sign-out-alt me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Quick Actions Section -->
+            <section class="quick-actions">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="action-card pick-up-shift" onclick="openPickUpModal()">
+                                <div class="action-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <h3>Pick Up a Shift</h3>
+                                <p>Browse available shifts and pick up extra hours</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="action-card drop-shift" onclick="openDropShiftModal()">
+                                <div class="action-icon">
+                                    <i class="fas fa-minus-circle"></i>
+                                </div>
+                                <h3>Drop a Shift</h3>
+                                <p>Release one of your scheduled shifts</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="action-card chat-assistant" onclick="toggleChatbot()" style="cursor: pointer;">
+                                <div class="action-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h3>Chat with Assistant</h3>
+                                <p>Click to open AI chatbot</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Schedule Section -->
+            <section class="my-schedule">
+                <div class="container-fluid">
+                    <div class="schedule-header">
+                        <h2>My Schedule</h2>
+                        <a href="#" class="view-all-link">View All</a>
+                    </div>
+                    <div class="schedule-table-container">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Role</th>
+                                    <th>Station</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jan 15, 2025</td>
+                                    <td>6:00 AM - 2:00 PM</td>
+                                    <td>Flight Attendant</td>
+                                    <td>Gate A12</td>
+                                    <td><span class="status-tag assigned">Assigned</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Jan 16, 2025</td>
+                                    <td>10:00 AM - 6:00 PM</td>
+                                    <td>Flight Attendant</td>
+                                    <td>Gate B8</td>
+                                    <td><span class="status-tag pending-drop">Pending Drop</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Jan 17, 2025</td>
+                                    <td>2:00 PM - 10:00 PM</td>
+                                    <td>Flight Attendant</td>
+                                    <td>Gate C15</td>
+                                    <td><span class="status-tag claimed-pending">Claimed Pending</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts & Incentives Section -->
+            <section class="alerts-incentives">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="alert-card">
+                                <div class="alert-header">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h3>Staffing Alerts</h3>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-item high-priority">
+                                        <span class="alert-time">Today 6:00 AM</span>
+                                        <p>Urgent: Gate A12 needs coverage</p>
+                                    </div>
+                                    <div class="alert-item medium-priority">
+                                        <span class="alert-time">Tomorrow 2:00 PM</span>
+                                        <p>Gate B8 short on staff</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="incentive-card">
+                                <div class="incentive-header">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <h3>Incentive Offers</h3>
+                                </div>
+                                <div class="incentive-content">
+                                    <div class="incentive-item">
+                                        <span class="incentive-amount">+$50</span>
+                                        <p>Weekend shifts available</p>
+                                    </div>
+                                    <div class="incentive-item">
+                                        <span class="incentive-amount">+$75</span>
+                                        <p>Holiday coverage bonus</p>
+                                    </div>
+                                    <div class="incentive-item">
+                                        <span class="incentive-amount">+$100</span>
+                                        <p>Last-minute shift coverage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Chatbot Drawer -->
+    <div class="chatbot-drawer" id="chatbotDrawer">
+        <div class="chatbot-header">
+            <h4>LNB Assistant</h4>
+            <button class="close-chat" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot-message">
+                <p>👋 Hello! I'm your LNB Airlines Assistant. I'm here to help you with:</p>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>Finding available shifts</li>
+                    <li>Managing your schedule</li>
+                    <li>Information about incentives</li>
+                    <li>Staffing alerts and coverage</li>
+                </ul>
+                <p>What can I help you with today?</p>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" placeholder="Ask me anything..." id="chatbotInput">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Button -->
+    <button class="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+        <span>Ask LNB Assistant</span>
+    </button>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-collapsed');
+        }
+
+        function toggleChatbot() {
+            console.log('toggleChatbot function called!'); // Debug log
+            const drawer = document.getElementById('chatbotDrawer');
+            const toggle = document.querySelector('.chatbot-toggle');
+            
+            console.log('Drawer element:', drawer); // Debug log
+            console.log('Toggle element:', toggle); // Debug log
+            
+            if (!drawer) {
+                console.error('Chatbot drawer not found!');
+                alert('Chatbot drawer not found!'); // Visual debug
+                return;
+            }
+            
+            console.log('Before toggle - drawer classes:', drawer.className); // Debug log
+            drawer.classList.toggle('chatbot-open');
+            console.log('After toggle - drawer classes:', drawer.className); // Debug log
+            
+            if (toggle) {
+                toggle.classList.toggle('chatbot-active');
+            }
+            
+            // Add visual feedback when opening from card
+            if (drawer.classList.contains('chatbot-open')) {
+                console.log('Chatbot opened successfully!'); // Debug log
+                // Focus on the input field when chatbot opens
+                setTimeout(() => {
+                    const input = document.getElementById('chatbotInput');
+                    if (input) {
+                        input.focus();
+                    }
+                }, 300);
+            } else {
+                console.log('Chatbot closed'); // Debug log
+            }
+        }
+
+        // Make sure the function is available globally
+        window.toggleChatbot = toggleChatbot;
+
+        // Document ready function to ensure everything is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, chatbot elements check:');
+            const drawer = document.getElementById('chatbotDrawer');
+            const chatCard = document.querySelector('.chat-assistant');
+            console.log('Chatbot drawer found:', !!drawer);
+            console.log('Chat assistant card found:', !!chatCard);
+            
+            if (drawer) {
+                console.log('Drawer classes:', drawer.className);
+            }
+        });
+
+        function openPickUpModal() {
+            // Implementation for pick up shift modal
+            alert('Pick Up Shift functionality would open here');
+        }
+
+        function openDropShiftModal() {
+            // Implementation for drop shift modal
+            alert('Drop Shift functionality would open here');
+        }
+
+        function signOut() {
+            console.log('signOut function called!');
+            // Clear any confirmation dialog
+            if (confirm('Are you sure you want to sign out?')) {
+                // Redirect to login page with logout action
+                window.location.href = '/Login?action=logout';
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatbotInput');
+            const messages = document.getElementById('chatbotMessages');
+            const userMessage = input.value.trim();
+            
+            if (userMessage) {
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user-message';
+                userMsg.innerHTML = `<p>${userMessage}</p>`;
+                messages.appendChild(userMsg);
+                
+                // Clear input and scroll
+                input.value = '';
+                messages.scrollTop = messages.scrollHeight;
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Generate AI response
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    const botResponse = generateAIResponse(userMessage);
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'message bot-message';
+                    botMessage.innerHTML = `<p>${botResponse}</p>`;
+                    messages.appendChild(botMessage);
+                    messages.scrollTop = messages.scrollHeight;
+                }, 1500 + Math.random() * 1000); // Random delay between 1.5-2.5 seconds
+            }
+        }
+
+        function showTypingIndicator() {
+            const messages = document.getElementById('chatbotMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'message bot-message typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            messages.appendChild(typingDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function generateAIResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // Shift-related responses
+            if (message.includes('shift') || message.includes('schedule') || message.includes('work')) {
+                if (message.includes('pick up') || message.includes('available')) {
+                    return "I can help you find available shifts! Currently, there are 3 open shifts for this week. Would you like me to show you the details? You can also click the 'Pick Up a Shift' button on the dashboard.";
+                } else if (message.includes('drop') || message.includes('release')) {
+                    return "To drop a shift, I can help you identify which shifts you're currently scheduled for. You can also use the 'Drop a Shift' button on the dashboard to see your current assignments.";
+                } else if (message.includes('when') || message.includes('time') || message.includes('next')) {
+                    return "Your next shift is tomorrow at 6:00 AM - 2:00 PM as a Flight Attendant at Gate A12. You can view your full schedule in the 'My Schedule' section.";
+                } else {
+                    return "I'm here to help with your schedule! You can pick up new shifts, drop existing ones, or view your current schedule. What would you like to know about your shifts?";
+                }
+            }
+            
+            // Incentive-related responses
+            else if (message.includes('incentive') || message.includes('bonus') || message.includes('pay') || message.includes('money')) {
+                return "Great question about incentives! Currently, we have several bonus opportunities: +$50 for weekend shifts, +$75 for holiday coverage, and +$100 for last-minute shift coverage. Check the 'Incentives' section on your dashboard for more details.";
+            }
+            
+            // Alert-related responses
+            else if (message.includes('alert') || message.includes('urgent') || message.includes('coverage') || message.includes('staff')) {
+                return "I can see there are some staffing alerts today. Gate A12 needs urgent coverage at 6:00 AM, and Gate B8 is short on staff for tomorrow at 2:00 PM. These might be great opportunities for overtime pay!";
+            }
+            
+            // General help
+            else if (message.includes('help') || message.includes('assistance') || message.includes('support')) {
+                return "I'm your LNB Airlines Assistant! I can help you with:\n• Finding and picking up available shifts\n• Dropping shifts you can't work\n• Checking your schedule and upcoming shifts\n• Information about incentives and bonuses\n• Staffing alerts and coverage needs\n\nWhat can I help you with today?";
+            }
+            
+            // Greetings
+            else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return "Hello! Welcome to your LNB Airlines employee portal. I'm here to help you manage your schedule, find shifts, and stay informed about opportunities. How can I assist you today?";
+            }
+            
+            // Role-related
+            else if (message.includes('role') || message.includes('position') || message.includes('job')) {
+                return `You're currently working as a ${document.querySelector('.user-role')?.textContent || 'Flight Attendant'}. I can help you find shifts that match your role and experience level.`;
+            }
+            
+            // Default responses
+            else {
+                const responses = [
+                    "I understand you're looking for help. I can assist you with shift management, schedule questions, incentives, and general employee information. What specific area would you like to know more about?",
+                    "That's a great question! I'm here to help with your work schedule, available shifts, and employee benefits. Could you be more specific about what you need assistance with?",
+                    "I'm designed to help LNB Airlines employees with their work-related needs. I can help with shifts, schedules, incentives, and staffing information. What would you like to explore?",
+                    "Thanks for reaching out! I can help you with shift management, finding available work, checking your schedule, or answering questions about employee benefits. What's on your mind?"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+        }
+
+        // Handle Enter key in chatbot input
+        document.getElementById('chatbotInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Close chatbot when clicking outside
+        document.addEventListener('click', function(e) {
+            const drawer = document.getElementById('chatbotDrawer');
+            const toggle = document.querySelector('.chatbot-toggle');
+            
+            if (!drawer.contains(e.target) && !toggle.contains(e.target) && drawer.classList.contains('chatbot-open')) {
+                toggleChatbot();
+            }
+        });
+    </script>
+}

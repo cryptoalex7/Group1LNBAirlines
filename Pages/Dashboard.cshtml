@@ -1,0 +1,325 @@
+@page
+@model DashboardModel
+@{
+    ViewData["Title"] = "Employee Dashboard";
+}
+
+<div class="dashboard-container">
+    <!-- Navigation Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h4>LNB Airlines</h4>
+            <button class="sidebar-toggle d-md-none" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <ul class="sidebar-nav">
+            <li class="nav-item active">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>My Schedule</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Pick Up Shift</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-minus-circle"></i>
+                    <span>Drop a Shift</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-gift"></i>
+                    <span>Incentives</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sign Out</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <h1>Employee Dashboard</h1>
+            </div>
+            <div class="top-bar-right">
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-avatar dropdown">
+                    <button class="avatar-btn dropdown-toggle" data-bs-toggle="dropdown">
+                        <img src="https://via.placeholder.com/40x40/003366/ffffff?text=JS" alt="John Smith" class="avatar-img">
+                        <span class="user-info">
+                            <span class="user-name">John Smith</span>
+                            <span class="user-role">Flight Attendant</span>
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-content">
+            <!-- Quick Actions Section -->
+            <section class="quick-actions">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="action-card pick-up-shift" onclick="openPickUpModal()">
+                                <div class="action-icon">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <h3>Pick Up a Shift</h3>
+                                <p>Browse available shifts and pick up extra hours</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="action-card drop-shift" onclick="openDropShiftModal()">
+                                <div class="action-icon">
+                                    <i class="fas fa-minus-circle"></i>
+                                </div>
+                                <h3>Drop a Shift</h3>
+                                <p>Release one of your scheduled shifts</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="action-card chat-assistant" onclick="toggleChatbot()">
+                                <div class="action-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <h3>Chat with Assistant</h3>
+                                <p>Get help with schedules and requests</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- My Schedule Section -->
+            <section class="my-schedule">
+                <div class="container-fluid">
+                    <div class="schedule-header">
+                        <h2>My Schedule</h2>
+                        <a href="#" class="view-all-link">View All</a>
+                    </div>
+                    <div class="schedule-table-container">
+                        <table class="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Role</th>
+                                    <th>Station</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Jan 15, 2025</td>
+                                    <td>6:00 AM - 2:00 PM</td>
+                                    <td>Flight Attendant</td>
+                                    <td>Gate A12</td>
+                                    <td><span class="status-tag assigned">Assigned</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Jan 16, 2025</td>
+                                    <td>10:00 AM - 6:00 PM</td>
+                                    <td>Flight Attendant</td>
+                                    <td>Gate B8</td>
+                                    <td><span class="status-tag pending-drop">Pending Drop</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Jan 17, 2025</td>
+                                    <td>2:00 PM - 10:00 PM</td>
+                                    <td>Flight Attendant</td>
+                                    <td>Gate C15</td>
+                                    <td><span class="status-tag claimed-pending">Claimed Pending</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts & Incentives Section -->
+            <section class="alerts-incentives">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="alert-card">
+                                <div class="alert-header">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h3>Staffing Alerts</h3>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-item high-priority">
+                                        <span class="alert-time">Today 6:00 AM</span>
+                                        <p>Urgent: Gate A12 needs coverage</p>
+                                    </div>
+                                    <div class="alert-item medium-priority">
+                                        <span class="alert-time">Tomorrow 2:00 PM</span>
+                                        <p>Gate B8 short on staff</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="incentive-card">
+                                <div class="incentive-header">
+                                    <i class="fas fa-dollar-sign"></i>
+                                    <h3>Incentive Offers</h3>
+                                </div>
+                                <div class="incentive-content">
+                                    <div class="incentive-item">
+                                        <span class="incentive-amount">+$50</span>
+                                        <p>Weekend shifts available</p>
+                                    </div>
+                                    <div class="incentive-item">
+                                        <span class="incentive-amount">+$75</span>
+                                        <p>Holiday coverage bonus</p>
+                                    </div>
+                                    <div class="incentive-item">
+                                        <span class="incentive-amount">+$100</span>
+                                        <p>Last-minute shift coverage</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Chatbot Drawer -->
+    <div class="chatbot-drawer" id="chatbotDrawer">
+        <div class="chatbot-header">
+            <h4>LNB Assistant</h4>
+            <button class="close-chat" onclick="toggleChatbot()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="message bot-message">
+                <p>Hello! I'm your LNB Assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" placeholder="Ask me anything..." id="chatbotInput">
+            <button onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Floating Chatbot Button -->
+    <button class="chatbot-toggle" onclick="toggleChatbot()">
+        <i class="fas fa-robot"></i>
+        <span>Ask LNB Assistant</span>
+    </button>
+</div>
+
+@section Scripts {
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-collapsed');
+        }
+
+        function toggleChatbot() {
+            const drawer = document.getElementById('chatbotDrawer');
+            const toggle = document.querySelector('.chatbot-toggle');
+            
+            drawer.classList.toggle('chatbot-open');
+            toggle.classList.toggle('chatbot-active');
+        }
+
+        function openPickUpModal() {
+            // Implementation for pick up shift modal
+            alert('Pick Up Shift functionality would open here');
+        }
+
+        function openDropShiftModal() {
+            // Implementation for drop shift modal
+            alert('Drop Shift functionality would open here');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatbotInput');
+            const messages = document.getElementById('chatbotMessages');
+            
+            if (input.value.trim()) {
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message user-message';
+                userMessage.innerHTML = `<p>${input.value}</p>`;
+                messages.appendChild(userMessage);
+                
+                // Simulate bot response
+                setTimeout(() => {
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'message bot-message';
+                    botMessage.innerHTML = '<p>I understand your request. Let me help you with that.</p>';
+                    messages.appendChild(botMessage);
+                    messages.scrollTop = messages.scrollHeight;
+                }, 1000);
+                
+                input.value = '';
+                messages.scrollTop = messages.scrollHeight;
+            }
+        }
+
+        // Handle Enter key in chatbot input
+        document.getElementById('chatbotInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Close chatbot when clicking outside
+        document.addEventListener('click', function(e) {
+            const drawer = document.getElementById('chatbotDrawer');
+            const toggle = document.querySelector('.chatbot-toggle');
+            
+            if (!drawer.contains(e.target) && !toggle.contains(e.target) && drawer.classList.contains('chatbot-open')) {
+                toggleChatbot();
+            }
+        });
+    </script>
+}

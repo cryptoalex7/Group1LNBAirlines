@@ -120,7 +120,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="action-card chat-assistant" onclick="toggleChatbot()" style="cursor: pointer;">
+                            <div class="action-card chat-assistant" onclick="console.log('Card clicked!'); toggleChatbot();" style="cursor: pointer;">
                                 <div class="action-icon">
                                     <i class="fas fa-robot"></i>
                                 </div>
@@ -273,10 +273,12 @@
         function toggleChatbot() {
             console.log('toggleChatbot function called!'); // Debug log
             const drawer = document.getElementById('chatbotDrawer');
-            const toggle = document.querySelector('.chatbot-toggle');
+            const floatingToggle = document.querySelector('.chatbot-toggle');
+            const cardToggle = document.querySelector('.chat-assistant');
             
             console.log('Drawer element:', drawer); // Debug log
-            console.log('Toggle element:', toggle); // Debug log
+            console.log('Floating toggle element:', floatingToggle); // Debug log
+            console.log('Card toggle element:', cardToggle); // Debug log
             
             if (!drawer) {
                 console.error('Chatbot drawer not found!');
@@ -288,8 +290,12 @@
             drawer.classList.toggle('chatbot-open');
             console.log('After toggle - drawer classes:', drawer.className); // Debug log
             
-            if (toggle) {
-                toggle.classList.toggle('chatbot-active');
+            // Toggle active state on both floating button and card
+            if (floatingToggle) {
+                floatingToggle.classList.toggle('chatbot-active');
+            }
+            if (cardToggle) {
+                cardToggle.classList.toggle('chatbot-active');
             }
             
             // Add visual feedback when opening from card
@@ -460,9 +466,13 @@
         // Close chatbot when clicking outside
         document.addEventListener('click', function(e) {
             const drawer = document.getElementById('chatbotDrawer');
-            const toggle = document.querySelector('.chatbot-toggle');
+            const floatingToggle = document.querySelector('.chatbot-toggle');
+            const cardToggle = document.querySelector('.chat-assistant');
             
-            if (!drawer.contains(e.target) && !toggle.contains(e.target) && drawer.classList.contains('chatbot-open')) {
+            if (!drawer.contains(e.target) && 
+                !floatingToggle.contains(e.target) && 
+                !cardToggle.contains(e.target) && 
+                drawer.classList.contains('chatbot-open')) {
                 toggleChatbot();
             }
         });

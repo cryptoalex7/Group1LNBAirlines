@@ -120,7 +120,7 @@
                             </div>
                         </div>
                         <div class="col-md-4 mb-4">
-                            <div class="action-card chat-assistant" onclick="toggleChatbot()">
+                            <div class="action-card chat-assistant" onclick="console.log('Card clicked!'); toggleChatbot();">
                                 <div class="action-icon">
                                     <i class="fas fa-robot"></i>
                                 </div>
@@ -238,7 +238,14 @@
         </div>
         <div class="chatbot-messages" id="chatbotMessages">
             <div class="message bot-message">
-                <p>Hello! I'm your LNB Assistant. How can I help you today?</p>
+                <p>👋 Hello! I'm your LNB Airlines Assistant. I'm here to help you with:</p>
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>Finding available shifts</li>
+                    <li>Managing your schedule</li>
+                    <li>Information about incentives</li>
+                    <li>Staffing alerts and coverage</li>
+                </ul>
+                <p>What can I help you with today?</p>
             </div>
         </div>
         <div class="chatbot-input">
@@ -264,12 +271,63 @@
         }
 
         function toggleChatbot() {
+            console.log('toggleChatbot function called!'); // Debug log
             const drawer = document.getElementById('chatbotDrawer');
-            const toggle = document.querySelector('.chatbot-toggle');
+            const floatingToggle = document.querySelector('.chatbot-toggle');
+            const cardToggle = document.querySelector('.chat-assistant');
             
+            console.log('Drawer element:', drawer); // Debug log
+            console.log('Floating toggle element:', floatingToggle); // Debug log
+            console.log('Card toggle element:', cardToggle); // Debug log
+            
+            if (!drawer) {
+                console.error('Chatbot drawer not found!');
+                alert('Chatbot drawer not found!'); // Visual debug
+                return;
+            }
+            
+            console.log('Before toggle - drawer classes:', drawer.className); // Debug log
             drawer.classList.toggle('chatbot-open');
-            toggle.classList.toggle('chatbot-active');
+            console.log('After toggle - drawer classes:', drawer.className); // Debug log
+            
+            // Toggle active state on both floating button and card
+            if (floatingToggle) {
+                floatingToggle.classList.toggle('chatbot-active');
+            }
+            if (cardToggle) {
+                cardToggle.classList.toggle('chatbot-active');
+            }
+            
+            // Add visual feedback when opening from card
+            if (drawer.classList.contains('chatbot-open')) {
+                console.log('Chatbot opened successfully!'); // Debug log
+                // Focus on the input field when chatbot opens
+                setTimeout(() => {
+                    const input = document.getElementById('chatbotInput');
+                    if (input) {
+                        input.focus();
+                    }
+                }, 300);
+            } else {
+                console.log('Chatbot closed'); // Debug log
+            }
         }
+
+        // Make sure the function is available globally
+        window.toggleChatbot = toggleChatbot;
+
+        // Document ready function to ensure everything is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, chatbot elements check:');
+            const drawer = document.getElementById('chatbotDrawer');
+            const chatCard = document.querySelector('.chat-assistant');
+            console.log('Chatbot drawer found:', !!drawer);
+            console.log('Chat assistant card found:', !!chatCard);
+            
+            if (drawer) {
+                console.log('Drawer classes:', drawer.className);
+            }
+        });
 
         function openPickUpModal() {
             // Implementation for pick up shift modal
@@ -284,24 +342,108 @@
         function sendMessage() {
             const input = document.getElementById('chatbotInput');
             const messages = document.getElementById('chatbotMessages');
+            const userMessage = input.value.trim();
             
-            if (input.value.trim()) {
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user-message';
-                userMessage.innerHTML = `<p>${input.value}</p>`;
-                messages.appendChild(userMessage);
+            if (userMessage) {
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'message user-message';
+                userMsg.innerHTML = `<p>${userMessage}</p>`;
+                messages.appendChild(userMsg);
                 
-                // Simulate bot response
-                setTimeout(() => {
-                    const botMessage = document.createElement('div');
-                    botMessage.className = 'message bot-message';
-                    botMessage.innerHTML = '<p>I understand your request. Let me help you with that.</p>';
-                    messages.appendChild(botMessage);
-                    messages.scrollTop = messages.scrollHeight;
-                }, 1000);
-                
+                // Clear input and scroll
                 input.value = '';
                 messages.scrollTop = messages.scrollHeight;
+                
+                // Show typing indicator
+                showTypingIndicator();
+                
+                // Generate AI response
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    const botResponse = generateAIResponse(userMessage);
+                    const botMessage = document.createElement('div');
+                    botMessage.className = 'message bot-message';
+                    botMessage.innerHTML = `<p>${botResponse}</p>`;
+                    messages.appendChild(botMessage);
+                    messages.scrollTop = messages.scrollHeight;
+                }, 1500 + Math.random() * 1000); // Random delay between 1.5-2.5 seconds
+            }
+        }
+
+        function showTypingIndicator() {
+            const messages = document.getElementById('chatbotMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'message bot-message typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            messages.appendChild(typingDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        function generateAIResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            // Shift-related responses
+            if (message.includes('shift') || message.includes('schedule') || message.includes('work')) {
+                if (message.includes('pick up') || message.includes('available')) {
+                    return "I can help you find available shifts! Currently, there are 3 open shifts for this week. Would you like me to show you the details? You can also click the 'Pick Up a Shift' button on the dashboard.";
+                } else if (message.includes('drop') || message.includes('release')) {
+                    return "To drop a shift, I can help you identify which shifts you're currently scheduled for. You can also use the 'Drop a Shift' button on the dashboard to see your current assignments.";
+                } else if (message.includes('when') || message.includes('time') || message.includes('next')) {
+                    return "Your next shift is tomorrow at 6:00 AM - 2:00 PM as a Flight Attendant at Gate A12. You can view your full schedule in the 'My Schedule' section.";
+                } else {
+                    return "I'm here to help with your schedule! You can pick up new shifts, drop existing ones, or view your current schedule. What would you like to know about your shifts?";
+                }
+            }
+            
+            // Incentive-related responses
+            else if (message.includes('incentive') || message.includes('bonus') || message.includes('pay') || message.includes('money')) {
+                return "Great question about incentives! Currently, we have several bonus opportunities: +$50 for weekend shifts, +$75 for holiday coverage, and +$100 for last-minute shift coverage. Check the 'Incentives' section on your dashboard for more details.";
+            }
+            
+            // Alert-related responses
+            else if (message.includes('alert') || message.includes('urgent') || message.includes('coverage') || message.includes('staff')) {
+                return "I can see there are some staffing alerts today. Gate A12 needs urgent coverage at 6:00 AM, and Gate B8 is short on staff for tomorrow at 2:00 PM. These might be great opportunities for overtime pay!";
+            }
+            
+            // General help
+            else if (message.includes('help') || message.includes('assistance') || message.includes('support')) {
+                return "I'm your LNB Airlines Assistant! I can help you with:\n• Finding and picking up available shifts\n• Dropping shifts you can't work\n• Checking your schedule and upcoming shifts\n• Information about incentives and bonuses\n• Staffing alerts and coverage needs\n\nWhat can I help you with today?";
+            }
+            
+            // Greetings
+            else if (message.includes('hello') || message.includes('hi') || message.includes('hey')) {
+                return "Hello! Welcome to your LNB Airlines employee portal. I'm here to help you manage your schedule, find shifts, and stay informed about opportunities. How can I assist you today?";
+            }
+            
+            // Role-related
+            else if (message.includes('role') || message.includes('position') || message.includes('job')) {
+                return `You're currently working as a ${document.querySelector('.user-role')?.textContent || 'Flight Attendant'}. I can help you find shifts that match your role and experience level.`;
+            }
+            
+            // Default responses
+            else {
+                const responses = [
+                    "I understand you're looking for help. I can assist you with shift management, schedule questions, incentives, and general employee information. What specific area would you like to know more about?",
+                    "That's a great question! I'm here to help with your work schedule, available shifts, and employee benefits. Could you be more specific about what you need assistance with?",
+                    "I'm designed to help LNB Airlines employees with their work-related needs. I can help with shifts, schedules, incentives, and staffing information. What would you like to explore?",
+                    "Thanks for reaching out! I can help you with shift management, finding available work, checking your schedule, or answering questions about employee benefits. What's on your mind?"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
             }
         }
 
@@ -315,9 +457,13 @@
         // Close chatbot when clicking outside
         document.addEventListener('click', function(e) {
             const drawer = document.getElementById('chatbotDrawer');
-            const toggle = document.querySelector('.chatbot-toggle');
+            const floatingToggle = document.querySelector('.chatbot-toggle');
+            const cardToggle = document.querySelector('.chat-assistant');
             
-            if (!drawer.contains(e.target) && !toggle.contains(e.target) && drawer.classList.contains('chatbot-open')) {
+            if (!drawer.contains(e.target) && 
+                !floatingToggle.contains(e.target) && 
+                !cardToggle.contains(e.target) && 
+                drawer.classList.contains('chatbot-open')) {
                 toggleChatbot();
             }
         });
